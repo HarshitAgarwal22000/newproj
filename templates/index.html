@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% block title %}
+Cladimir
+{% endblock %}
+{%block body%}
+
+<center>
+<h3>
+    Enter the log file to get relevant details</h3>
+<br>
+<br>
+
+<input type="file" id="file-input" accept=".log"></input>
+<br>
+<br>
+
+<button id="process-button">Submit</button>
+
+
+<div id="result"></div>
+</center>
+<br>
+<br>
+<hr style="width: 40%;">
+<br>
+<center>
+<h3>Enter <b>FROM</b> date and timestamp</h3>
+<input type="date" id="todate"></input>
+<input type="time" id="totime"></input>
+<br>
+<br>
+<h3>Enter <b>TO</b> date and timestamp</h3>
+<input type="date" id="fodate"></input>
+<input type="time" id="fotime"></input>
+<br>
+<br>
+
+<button id="du">Submit</button>
+<br>
+<div class="regexvalues">
+    {% for elements in regexvalues %}
+    <div class="detj"> {{ elements }} </div>
+    {% endfor %}
+</div>
+<br>
+<hr style="width: 40%;">
+<br>
+<div class="un">
+    <div style="margin-bottom: 2%;">Unique dates in your file</div>
+    {% for w in un %}
+  
+    <button style="margin-bottom:5px;" class="dates">{{ w }}</button>
+    {% endfor %}
+</div>
+
+    <div class="val">
+        
+        {% for element in val %}
+       <div class="det"> {{ element }} </div>
+       {% endfor %}
+    </div>
+   
+
+<br>
+<hr style="width: 40%;">
+<br>
+<br>
+<button id="requests10">Get all statistics</button>
+<button id="hide">Hide all statistics</button>
+<br>
+<div class="allreqtim">
+    
+</div>
+<br>
+<div class="req">
+   
+</div>
+<br>
+<br>
+<input type="text" id="hostinput" placeholder="Enter host">
+<button id="searchhost">Search Host</button>
+
+
+
+<div class="re2" id="retwo" style="display: none;">
+    <p>All Requests > 2s</p>
+    {% for ele in re2 %}
+    <div style="margin-bottom:5px;;" > {{ ele }} </div>
+    {% endfor %}
+</div>
+<div class="re5"  id="refive" style="display: none;">
+    <p>All Requests > 5s</p>
+    {% for ele in re5 %}
+    <div style="margin-bottom:5px;" > {{ ele }} </div>
+    {% endfor %}
+</div>
+<div class="re10"  id="reten" style="display: none;">
+    <p>All Requests > 10s</p>
+    {% for ele in re10 %}
+<div style="margin-bottom:5px;" > {{ ele }} </div>
+{% endfor %}
+</div>
+<div class="ipadd"  id="ipadd" style="display: none;">
+    
+    {% for ele in ipadd %}
+    <div style="margin-bottom:5px;" > {{ ele }} </div>
+    {% endfor %}
+</div>
+<div class="datee" id="dates"style="display: none;">
+    
+    {% for ele in datee %}
+<div style="margin-bottom:5px;" > {{ ele }} </div>
+{% endfor %}
+</div>
+<div class="stat" id="statco"style="display: none;">
+    <p>All Status Codes</p>
+    {% for ele in stat %}
+<div style="margin-bottom:5px;" > {{ ele }} </div>
+{% endfor %}
+</div>
+<div class="cou" id="coun" style="display: none;">
+    <p>Count of Status Codes</p>
+    {% for ele in cou %}
+<div style="margin-bottom:5px;" > {{ ele }} </div>
+{% endfor %}
+</div>
+<div class="req" id="req"style="display: none;">
+    <p>Requests in last 10 min</p>
+    {% for ele in req %}
+<div style="margin-bottom:5px;" > {{ ele }} </div>
+{% endfor %}
+</div>
+
+
+
+
+
+
+<div class="all">
+{% for ele in all %}
+<div style="margin-bottom:5px;" class="hostde"> {{ ele }} </div>
+{% endfor %}
+</div>
+</center>
+</center>
+<script>
+   
+   
+document.getElementById("du").onclick=function()
+{
+    
+    let toda=document.getElementById("todate").value;
+    let toti=document.getElementById("totime").value;
+    let foda=document.getElementById("fodate").value;
+    let foti=document.getElementById("fotime").value;
+    let sr=toda+":"+toti+"-"+foda+";"+foti;
+    fetch("/process_value_fetch", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ input_value: sr })
+        })
+        .then(response => response.text())
+       
+        .catch(error => {
+            console.error("Error:", error);
+        });
+        location.reload()
+      
+    console.log(toda);
+    console.log(toti);
+    
+
+}
+document.getElementById("searchhost").onclick=function()
+{
+    
+    let hostvalue=document.getElementById("hostinput").value;
+    if(hostvalue!="")
+    {
+    
+    
+        fetch("/process_value_fetch1", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ input_value: hostvalue })
+            })
+            .then(response => response.text())
+       
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    location.reload()
+   
+        }
+        else{
+            console.log("Empty value logged")
+            location.reload()
+        }
+        
+        
+        
+    
+
+}
+document.addEventListener('click',(e)=>
+{
+    console.log(e.target)
+    if(e.target.classList.contains("dates"))
+    {
+        console.log("Dates clicked");
+    let clicktext=e.target.textContent;
+   
+    fetch("/process_value_fetch2", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ input_value: clicktext })
+        })
+        .then(response => response.text())
+       
+        .catch(error => {
+            console.error("Error:", error);
+        });
+        location.reload()
+
+    }
+    else
+    {
+        let y=document.getElementsByClassName("det")
+        console.log(y)
+        for (let i=0;i<y.length;i++)
+        {
+            y[i].style.display="none";
+        }
+    }
+
+})
+
+document.getElementById("requests10").onclick=function()
+{
+    document.getElementById("retwo").style.display="block"
+    document.getElementById("refive").style.display="block"
+    document.getElementById("reten").style.display="block"
+    document.getElementById("ipadd").style.display="block"
+    document.getElementById("dates").style.display="block"
+    document.getElementById("statco").style.display="block"
+    document.getElementById("coun").style.display="block"
+    document.getElementById("req").style.display="block"
+}
+document.getElementById("hide").onclick=function()
+{
+    document.getElementById("retwo").style.display="none"
+    document.getElementById("refive").style.display="none"
+    document.getElementById("reten").style.display="none"
+    document.getElementById("ipadd").style.display="none"
+    document.getElementById("dates").style.display="none"
+    document.getElementById("statco").style.display="none"
+    document.getElementById("coun").style.display="none"
+    document.getElementById("req").style.display="none"
+}
+
+
+
+</script>
+{% endblock %}
